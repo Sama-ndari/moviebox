@@ -40,6 +40,9 @@ async function bootstrap() {
     // .addBearerAuth()
     .addTag('Person Management')
     .addTag('Movies Management')
+    .addTag('TV-Show Management')
+    .addTag('Season Management')
+    .addTag('Episode Management')
     .addTag('Reviews Management')
     .build();
 

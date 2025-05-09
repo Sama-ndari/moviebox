@@ -76,6 +76,7 @@ export class PersonService {
   }
 
   async findOne(id: string): Promise<Person> {
+    console.log('Finding person with ID:', id);
     const person = await this.personModel.findById(id).exec();
     if (!person) {
       throw new NotFoundException(`Person with ID ${id} not found`);

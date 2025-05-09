@@ -39,6 +39,7 @@ export class Movie extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: Review.name }] })
   reviews?: Types.ObjectId[];
 
+  
   @Prop({ default: 0 })
   ratingCount: number;
 

@@ -10,41 +10,46 @@ import { Movie } from './entities/movie.entity';
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
-  @Get()
-  @ApiOperation({ summary: 'Retrieve all movies with optional filters' })
-  @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Items per page' })
-  @ApiQuery({ name: 'genre', required: false, type: String, example: 'Action', description: 'Filter by genre' })
-  @ApiResponse({ status: 200, description: 'List of movies', type: [Movie] })
-  async findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-    @Query('genre') genre?: string,
-  ) {
-    return this.moviesService.findAll(page, limit, genre);
+  // --- Discovery Endpoints ---
+
+  @Get('trending')
+  @ApiOperation({ summary: 'Get trending movies' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Number of movies to return' })
+  @ApiResponse({ status: 200, description: 'List of trending movies', type: [Movie] })
+  async getTrending(@Query('limit') limit = 10) {
+    return this.moviesService.getTrending(+limit);
   }
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new movie' })
-  @ApiResponse({ status: 201, description: 'Movie created', type: Movie })
-  async create(@Body() createMovieDto: CreateMovieDto) {
-    return this.moviesService.create(createMovieDto);
+  @Get('popular')
+  @ApiOperation({ summary: 'Get popular movies' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Number of movies to return' })
+  @ApiResponse({ status: 200, description: 'List of popular movies', type: [Movie] })
+  async getPopular(@Query('limit') limit = 10) {
+    return this.moviesService.getPopular(+limit);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update an existing movie' })
-  @ApiResponse({ status: 200, description: 'Movie updated', type: Movie })
-  @ApiResponse({ status: 404, description: 'Movie not found' })
-  async update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
-    return this.moviesService.update(id, updateMovieDto);
+  @Get('top-rated')
+  @ApiOperation({ summary: 'Get top-rated movies' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Number of movies to return' })
+  @ApiResponse({ status: 200, description: 'List of top-rated movies', type: [Movie] })
+  async getTopRated(@Query('limit') limit = 10) {
+    return this.moviesService.getTopRated(+limit);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete a movie' })
-  @ApiResponse({ status: 200, description: 'Movie deleted' })
-  @ApiResponse({ status: 404, description: 'Movie not found' })
-  async remove(@Param('id') id: string) {
-    return this.moviesService.remove(id);
+  @Get('now-playing')
+  @ApiOperation({ summary: 'Get now-playing movies' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Number of movies to return' })
+  @ApiResponse({ status: 200, description: 'List of now-playing movies', type: [Movie] })
+  async getNowPlaying(@Query('limit') limit = 10) {
+    return this.moviesService.getNowPlaying(+limit);
+  }
+
+  @Get('upcoming')
+  @ApiOperation({ summary: 'Get upcoming movies' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Number of movies to return' })
+  @ApiResponse({ status: 200, description: 'List of upcoming movies', type: [Movie] })
+  async getUpcoming(@Query('limit') limit = 10) {
+    return this.moviesService.getUpcoming(+limit);
   }
 
   @Get('search')
@@ -98,10 +103,6 @@ export class MoviesController {
     @Query('director') director?: string,
     @Query('writer') writer?: string,
   ) {
-    console.log('Received filter query:', { releaseDate, genres, status, 
-      contentRating, ratingCount, duration, budget, revenue, voteAverage,
-       voteCount, popularity, person, isActive, isAdult, language, country,
-        productionCompany, director, writer });
     return this.moviesService.filter({
       releaseDate,
       genres,
@@ -125,6 +126,29 @@ export class MoviesController {
     });
   }
 
+  @Get('all')
+  @ApiOperation({ summary: 'Retrieve all movies with optional filters' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Items per page' })
+  @ApiQuery({ name: 'genre', required: false, type: String, example: 'Action', description: 'Filter by genre' })
+  @ApiResponse({ status: 200, description: 'List of movies', type: [Movie] })
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('genre') genre?: string,
+  ) {
+    return this.moviesService.findAll(page, limit, genre);
+  }
+
+  // --- CRUD Endpoints ---
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new movie' })
+  @ApiResponse({ status: 201, description: 'Movie created', type: Movie })
+  async create(@Body() createMovieDto: CreateMovieDto) {
+    return this.moviesService.create(createMovieDto);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get a movie by ID' })
   @ApiResponse({ status: 200, description: 'Movie details', type: Movie })
@@ -133,27 +157,53 @@ export class MoviesController {
     return this.moviesService.findOne(id);
   }
 
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update an existing movie' })
+  @ApiResponse({ status: 200, description: 'Movie updated', type: Movie })
+  @ApiResponse({ status: 404, description: 'Movie not found' })
+  async update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
+    return this.moviesService.update(id, updateMovieDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a movie' })
+  @ApiResponse({ status: 200, description: 'Movie deleted' })
+  @ApiResponse({ status: 404, description: 'Movie not found' })
+  async remove(@Param('id') id: string) {
+    return this.moviesService.remove(id);
+  }
+
+  // --- Cast and Crew Endpoints ---
+
+  @Get(':id/cast')
+  @ApiOperation({ summary: 'List cast of a movie' })
+  @ApiResponse({ status: 200, description: 'List of cast members' })
+  @ApiResponse({ status: 404, description: 'Movie not found' })
+  async listCast(@Param('id') id: string) {
+    return this.moviesService.getCast(id);
+  }
+
   @Post(':id/cast')
   @ApiOperation({ summary: 'Add a cast member to a movie' })
   @ApiResponse({ status: 200, description: 'Cast member added', type: Movie })
   @ApiResponse({ status: 404, description: 'Movie or person not found' })
   @ApiBody({
-    description: 'Details of the cast member to add',
-    required: true,
-    type: Object,
+    description: 'Array of cast members',
     schema: {
-      type: 'object',
-      properties: {
-        person: { type: 'string', description: 'ID of the person', example: '12345' },
-        character: { type: 'string', description: 'Character name', example: 'John Doe' },
-        order: { type: 'number', description: 'Order of appearance', example: 1 },
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          person: { type: 'string', description: 'ID of the person' },
+          character: { type: 'string', description: 'Character name' },
+          order: { type: 'number', description: 'Order of appearance' },
+        },
       },
-      required: ['person', 'character', 'order'],
     },
   })
   async addCast(
     @Param('id') movieId: string,
-    @Body() castMember: { person: string; character: string; order: number },
+    @Body() castMember: { person: string; character: string; order: number }[],
   ) {
     return this.moviesService.addCast(movieId, castMember);
   }
@@ -166,30 +216,37 @@ export class MoviesController {
     return this.moviesService.removeCast(movieId, personId);
   }
 
+  @Get(':id/crew')
+  @ApiOperation({ summary: 'List crew of a movie' })
+  @ApiResponse({ status: 200, description: 'List of crew members' })
+  @ApiResponse({ status: 404, description: 'Movie not found' })
+  async listCrew(@Param('id') id: string) {
+    return this.moviesService.getCrew(id);
+  }
+
   @Post(':id/crew')
-  @ApiOperation({ summary: 'Add a crew member to a movie' })
-  @ApiResponse({ status: 200, description: 'Crew member added', type: Movie })
+  @ApiOperation({ summary: 'Add crew members to a movie' })
+  @ApiResponse({ status: 200, description: 'Crew members added', type: Movie })
   @ApiResponse({ status: 404, description: 'Movie or person not found' })
-  @ApiQuery({ name: 'id', required: true, type: String, description: 'Movie ID' })
   @ApiBody({
-    description: 'Details of the crew member to add',
-    required: true,
-    type: Object,
+    description: 'Array of crew members',
     schema: {
-      type: 'object',
-      properties: {
-        person: { type: 'string', description: 'ID of the person', example: '12345' },
-        role: { type: 'string', description: 'Role of the crew member', example: 'Director' },
-        department: { type: 'string', description: 'Department of the crew member', example: 'Production' },
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          person: { type: 'string', description: 'ID of the person' },
+          role: { type: 'string', description: 'Role of the crew member' },
+          department: { type: 'string', description: 'Department of the crew member' },
+        },
       },
-      required: ['person', 'role', 'department'],
     },
   })
   async addCrew(
     @Param('id') movieId: string,
-    @Body() crewMember: { person: string; role: string; department: string },
+    @Body() crewMembers: { person: string; role: string; department: string }[],
   ) {
-    return this.moviesService.addCrew(movieId, crewMember);
+    return this.moviesService.addCrew(movieId, crewMembers);
   }
 
   @Delete(':id/crew/:personId')
@@ -199,4 +256,67 @@ export class MoviesController {
   async removeCrew(@Param('id') movieId: string, @Param('personId') personId: string) {
     return this.moviesService.removeCrew(movieId, personId);
   }
+
+  // --- User Interaction Endpoints ---
+
+  @Post(':id/rate')
+  @ApiOperation({ summary: 'Add a rating to a movie' })
+  @ApiResponse({ status: 200, description: 'Rating added', type: Movie })
+  @ApiResponse({ status: 404, description: 'Movie not found' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        rating: { type: 'number', minimum: 0, maximum: 10, description: 'User rating (0-10)' },
+      },
+    },
+  })
+  async rate(@Param('id') id: string, @Body('rating') rating: number) {
+    return this.moviesService.rateMovie(id, rating);
+  }
+
+  @Get(':id/recommendations')
+  @ApiOperation({ summary: 'Get recommended movies based on a given movie' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 5, description: 'Number of recommendations' })
+  @ApiResponse({ status: 200, description: 'List of recommended movies', type: [Movie] })
+  @ApiResponse({ status: 404, description: 'Movie not found' })
+  async getRecommendations(@Param('id') id: string, @Query('limit') limit = 5) {
+    return this.moviesService.getRecommendations(id, +limit);
+  }
 }
+
+ // New Endpoints for Netflix-like Features
+
+  // @Post(':id/watchlist')
+  // @ApiOperation({ summary: 'Add a movie to user watchlist' })
+  // @ApiResponse({ status: 200, description: 'Movie added to watchlist' })
+  // @ApiResponse({ status: 404, description: 'Movie not found' })
+  // async addToWatchlist(@Param('id') movieId: string) {
+  //   return this.moviesService.addToWatchlist(movieId);
+  // }
+
+  // @Delete(':id/watchlist')
+  // @ApiOperation({ summary: 'Remove a movie from user watchlist' })
+  // @ApiResponse({ status: 200, description: 'Movie removed from watchlist' })
+  // @ApiResponse({ status: 404, description: 'Movie not found' })
+  // async removeFromWatchlist(@Param('id') movieId: string) {
+  //   return this.moviesService.removeFromWatchlist(movieId);
+  // }
+
+
+  // @Get(':id/trailers')
+  // @ApiOperation({ summary: 'Get trailers for a movie' })
+  // @ApiResponse({ status: 200, description: 'List of trailer URLs' })
+  // @ApiResponse({ status: 404, description: 'Movie not found' })
+  // async getTrailers(@Param('id') movieId: string) {
+  //   return this.moviesService.getTrailers(movieId);
+  // }
+
+  // @Get(':id/related')
+  // @ApiOperation({ summary: 'Get related movies' })
+  // @ApiQuery({ name: 'limit', required: false, type: Number, example: 5, description: 'Number of related movies' })
+  // @ApiResponse({ status: 200, description: 'List of related movies', type: [Movie] })
+  // @ApiResponse({ status: 404, description: 'Movie not found' })
+  // async getRelatedMovies(@Param('id') movieId: string, @Query('limit') limit: number = 5) {
+  //   return this.moviesService.getRelatedMovies(movieId, limit);
+  // }

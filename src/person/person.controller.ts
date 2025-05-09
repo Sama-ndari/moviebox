@@ -13,6 +13,7 @@ import {
     NotFoundException,
     HttpStatus,
     UseGuards,
+    Patch,
   } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
   import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
@@ -143,9 +144,7 @@ import { Person } from './entities/person.entity';
       return this.personService.getFilmography(id);
     }
   
-   
-  
-    @Put(':id')
+    @Patch(':id')
     @ApiOperation({ summary: 'Update person by ID' })
     @ApiParam({ name: 'id', description: 'Person ID' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Person has been updated.' })

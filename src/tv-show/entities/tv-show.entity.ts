@@ -1,63 +1,84 @@
-// // tv-shows/schemas/tv-show.schema.ts
-// import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-// import { Document } from 'mongoose';
-// // import { ContentRating } from '../../movies/schemas/movie.schema';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { MovieRating } from 'src/movie/entities/enumerate.entity';
+import { Person } from 'src/person/entities/person.entity';
 
-// @Schema({ timestamps: true })
-// export class TvShow extends Document {
-//   @Prop({ required: true, index: true })
-//   title: string;
+@Schema({ timestamps: true })
+export class TvShow extends Document {
+    @Prop({ required: true, index: true })
+    title: string;
 
-//   @Prop({ required: true })
-//   description: string;
+    @Prop({ required: true })
+    description: string;
 
-//   @Prop({ required: true })
-//   releaseDate: Date;
+    @Prop({ required: true })
+    releaseDate: Date;
 
-//   @Prop()
-//   endDate: Date;
+    @Prop()
+    endDate?: Date;
 
-//   @Prop({ type: [String], index: true })
-//   genres: string[];
+    @Prop({ type: [String], index: true })
+    genres: string[];
 
-//   @Prop()
-//   posterUrl: string;
+    @Prop()
+    posterUrl: string;
 
-//   @Prop()
-//   backdropUrl: string;
+    @Prop()
+    backdropUrl: string;
 
-//   @Prop()
-//   trailerUrl: string;
+    @Prop()
+    trailerUrl: string;
 
-//   // @Prop({ type: String, enum: ContentRating })
-//   // contentRating: ContentRating;
+    @Prop({ type: String, enum: MovieRating })
+    contentRating: MovieRating;
 
-//   @Prop({ type: Number, min: 0, max: 5, default: 0 })
-//   averageRating: number;
+    @Prop({ type: Number, min: 0, max: 5, default: 0 })
+    averageRating: number;
 
-//   @Prop({ default: 0 })
-//   ratingCount: number;
+    @Prop({ default: 0 })
+    ratingCount: number;
 
-//   @Prop({ default: 1 })
-//   seasons: number;
+    @Prop({ type: Number, default: 0 })
+    popularity: number;
 
-//   @Prop({ type: [{ name: String, character: String }] })
-//   cast: { name: string; character: string }[];
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'Season' }] })
+    seasons: Types.ObjectId[];
 
-//   @Prop({ type: [{ name: String, role: String }] })
-//   crew: { name: string; role: string }[];
+    @Prop({ default: 0 })
+    totalEpisodes: number;
 
-//   @Prop({ default: false })
-//   isFeatured: boolean;
+    @Prop([{
+        person: { type: Types.ObjectId, ref: Person.name },
+        character: String,
+        order: Number
+    }])
+    cast: {
+        person: Types.ObjectId,
+        character: string,
+        order: number
+    }[];
 
-//   @Prop({ default: true })
-//   isActive: boolean;
-// }
+    @Prop([{
+        person: { type: Types.ObjectId, ref: Person.name },
+        role: String,
+        department: String
+    }])
+    crew: {
+        person: Types.ObjectId,
+        role: string,
+        department: string
+    }[];
+    @Prop({ default: false })
+    isFeatured: boolean;
 
-// export const TvShowSchema = SchemaFactory.createForClass(TvShow);
+    @Prop({ default: true })
+    isActive: boolean;
+}
 
-// // Create compound text index for search
-// TvShowSchema.index(
-//   { title: 'text', description: 'text', genres: 'text' },
-//   { weights: { title: 10, genres: 5, description: 1 } }
-// );
+export const TvShowSchema = SchemaFactory.createForClass(TvShow);
+
+// Create compound text index for search
+TvShowSchema.index(
+    { title: 'text', description: 'text', genres: 'text' },
+    { weights: { title: 10, genres: 5, description: 1 } }
+);

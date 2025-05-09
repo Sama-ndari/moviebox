@@ -2,21 +2,18 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class Episode extends Document {
+export class Season extends Document {
   @Prop({ required: true })
-  episodeNumber: number;
+  seasonNumber: number;
 
   @Prop({ required: true })
-  title: string;
+  releaseDate: Date;
 
   @Prop()
   description?: string;
 
-  @Prop({ required: true })
-  duration: number; // in minutes
-
-  @Prop({ required: true })
-  releaseDate: Date;
+  @Prop()
+  posterUrl?: string;
 
   @Prop({ type: Number, min: 0, max: 5, default: 0 })
   averageRating: number;
@@ -27,11 +24,11 @@ export class Episode extends Document {
   @Prop({ type: Number, default: 0 })
   popularity: number;
 
-  @Prop()
-  thumbnailUrl?: string;
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Episode' }] })
+  episodes: Types.ObjectId[];
 
-  @Prop({ type: Types.ObjectId, ref: 'Season', required: true })
-  season: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'TvShow', required: true })
+  tvShow: Types.ObjectId;
 }
 
-export const EpisodeSchema = SchemaFactory.createForClass(Episode);
+export const SeasonSchema = SchemaFactory.createForClass(Season);

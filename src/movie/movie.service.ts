@@ -13,7 +13,7 @@ export class MoviesService {
   constructor(
     @InjectModel(Movie.name) private movieModel: Model<Movie>,
     @Inject(forwardRef(() => PersonService)) private readonly personService: PersonService,
-  ) {}
+  ) { }
 
   async create(createMovieDto: CreateMovieDto): Promise<Movie> {
     const createdMovie = new this.movieModel(createMovieDto);
@@ -187,16 +187,19 @@ export class MoviesService {
     }
   }
 
-  async addCast(movieId: string, castMember: { person: string; character: string; order: number }): Promise<Movie> {
+  async addCast(movieId: string, castMember: { person: string; character: string; order: number }[]): Promise<Movie> {
     const movie = await this.movieModel.findById(movieId).exec();
     if (!movie) throw new NotFoundException(`Movie with ID ${movieId} not found`);
 
-    const person = await this.personService.findOne(castMember.person);
-    movie.cast.push({
-      person: person._id as unknown as mongoose.Types.ObjectId,
-      character: castMember.character,
-      order: castMember.order,
-    });
+    for (const member of castMember) {
+      console.log('Processing cast member:', member.person, member.character, member.order);
+      const person = await this.personService.findOne(member.person);
+      movie.cast.push({
+        person: person._id as unknown as mongoose.Types.ObjectId,
+        character: member.character,
+        order: member.order,
+      });
+    }
     return movie.save();
   }
 
@@ -208,16 +211,19 @@ export class MoviesService {
     return movie.save();
   }
 
-  async addCrew(movieId: string, crewMember: { person: string; role: string; department: string }): Promise<Movie> {
+  async addCrew(movieId: string, crewMembers: { person: string; role: string; department: string }[]): Promise<Movie> {
     const movie = await this.movieModel.findById(movieId).exec();
     if (!movie) throw new NotFoundException(`Movie with ID ${movieId} not found`);
 
-    const person = await this.personService.findOne(crewMember.person);
-    movie.crew.push({
-      person: person._id as unknown as mongoose.Types.ObjectId,
-      role: crewMember.role,
-      department: crewMember.department,
-    });
+    for (const member of crewMembers) {
+      console.log('Processing crew member:', member.person, member.role, member.department);
+      const person = await this.personService.findOne(member.person);
+      movie.crew.push({
+        person: person._id as unknown as mongoose.Types.ObjectId,
+        role: member.role,
+        department: member.department,
+      });
+    }
     return movie.save();
   }
 
@@ -228,5 +234,57 @@ export class MoviesService {
     movie.crew = movie.crew.filter((crewMember) => crewMember.person.toString() !== personId);
     return movie.save();
   }
-  
+
+  async getCast(movieId: string) {
+    const m = await this.movieModel.findById(movieId).populate('cast.person', 'name').lean().exec();
+    if (!m) throw new NotFoundException();
+    return m.cast;
+  }
+
+  async getCrew(movieId: string) {
+    const m = await this.movieModel.findById(movieId).populate('crew.person', 'name').lean().exec();
+    if (!m) throw new NotFoundException();
+    return m.crew;
+  }
+
+  async rateMovie(id: string, rating: number) {
+    const m = await this.movieModel.findById(id).exec();
+    if (!m) throw new NotFoundException();
+    // simple average update
+    m.voteCount = (m.voteCount || 0) + 1;
+    m.voteAverage = ((m.voteAverage || 0) * (m.voteCount - 1) + rating) / m.voteCount;
+    return m.save();
+  }
+
+  async getTrending(limit: number) { return this.movieModel.find({ isActive: true }).sort({ popularity: -1 }).limit(limit).exec(); }
+
+  async getPopular(limit: number) { return this.movieModel.find().sort({ popularity: -1 }).limit(limit).exec(); }
+
+  async getTopRated(limit: number) { return this.movieModel.find().sort({ voteAverage: -1 }).limit(limit).exec(); }
+
+  async getNowPlaying(limit: number) {
+    const today = new Date();
+    return this.movieModel.find({ releaseDate: { $lte: today } })
+      .sort({ releaseDate: -1 })
+      .limit(limit).exec();
+  }
+
+  async getUpcoming(limit: number) {
+    const today = new Date();
+    return this.movieModel.find({ releaseDate: { $gt: today } })
+      .sort({ releaseDate: 1 })
+      .limit(limit).exec();
+  }
+
+  async getRecommendations(movieId: string, limit: number) {
+    const base = await this.movieModel.findById(movieId).lean().exec();
+    if (!base) throw new NotFoundException();
+    // simple “same genre” example:
+    return this.movieModel
+      .find({ _id: { $ne: movieId }, genres: { $in: base.genres } })
+      .limit(limit)
+      .exec();
+  }
+
+
 }

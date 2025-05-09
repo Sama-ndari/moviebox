@@ -1,7 +1,40 @@
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
+## How MovieBox Works (Backend)
 
+MovieBox is powered by a robust backend built using the NestJS framework. Here's an overview of how it operates:
+
+1. **Authentication and Authorization**  
+  - The backend uses JWT (JSON Web Tokens) for secure user authentication.  
+  - Role-based access control ensures that users have appropriate permissions for specific actions.
+
+2. **Database Management**  
+  - MovieBox uses a relational database (e.g., PostgreSQL) to store user data, movie details, and other related information.  
+  - TypeORM is utilized as the ORM (Object-Relational Mapping) tool for seamless database interactions.
+
+3. **RESTful API**  
+  - The backend exposes a set of RESTful APIs for client applications to interact with.  
+  - These APIs handle operations such as user registration, login, movie search, and favorites management.
+
+4. **Movie Data Integration**  
+  - MovieBox integrates with third-party APIs (e.g., TMDb) to fetch up-to-date movie information, including titles, genres, ratings, and trailers.
+
+5. **Caching**  
+  - Frequently accessed data, such as popular movies, is cached using Redis to improve performance and reduce API calls.
+
+6. **Error Handling**  
+  - Centralized error handling ensures that users receive meaningful error messages and that the system remains stable.
+
+7. **Scalability**  
+  - The backend is designed to handle high traffic with features like horizontal scaling and load balancing.  
+  - Docker is used for containerization, making deployment consistent and efficient.
+
+8. **Testing**  
+  - Comprehensive unit and integration tests are implemented to ensure the reliability of the backend.  
+  - Tools like Jest are used for automated testing.
+
+With these features, MovieBox provides a seamless and efficient experience for users, ensuring reliability and scalability for future growth.
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 

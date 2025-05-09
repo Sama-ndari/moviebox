@@ -16,12 +16,15 @@ import { MovieModule } from './movie/movie.module';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 // import { RolesGuard } from './common/guards/roles.guard';
 // import { UploadsModule } from './uploads/uploads.module';
-import appConfig from './config/app.config';
-import databaseConfig from './config/database.config';
-import jwtConfig from './config/jwt.config';
-import keycloakConfig from './config/keycloak.config';
+// import appConfig from './config/app.config';
+// import databaseConfig from './config/database.config';
+// import jwtConfig from './config/jwt.config';
+// import keycloakConfig from './config/keycloak.config';
 import { PersonModule } from './person/person.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { TvShowModule } from './tv-show/tv-show.module';
+import { SeasonModule } from './season/season.module';
+import { EpisodeModule } from './episode/episode.module';
 
 @Module({
   imports: [
@@ -52,8 +55,9 @@ import { ReviewsModule } from './reviews/reviews.module';
     // UsersModule,
     MovieModule,
     PersonModule,
-    // TvShowsModule,
-    // EpisodesModule,
+    TvShowModule,
+    SeasonModule,
+    EpisodeModule,
     // WatchlistModule,
     // WatchHistoryModule,
     ReviewsModule,
