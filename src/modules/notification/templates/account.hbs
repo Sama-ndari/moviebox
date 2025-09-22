@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Création de votre compte MovieBox</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+    
+    body, table, td, p, a, li, blockquote {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
+    
+    @media only screen and (max-width: 600px) {
+      .main-table {
+        width: 100% !important;
+      }
+      .mobile-padding {
+        padding: 20px 15px !important;
+      }
+      .logo-image {
+        height: 40px !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f6f9fc; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f6f9fc; padding: 20px;">
+    <tr>
+      <td align="center">
+        <!-- Main Content Container -->
+        <table role="presentation" class="main-table" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 0 auto;">
+          <!-- Header -->
+          <tr>
+            <td class="mobile-padding" style="padding: 40px 30px; background: linear-gradient(135deg, #f44336, #b71c1c); text-align: center; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+              <h1 style="color: #ffffff; font-size: 24px; font-weight: 600; margin: 0; letter-spacing: 0.5px;">Bienvenue sur MovieBox !</h1>
+            </td>
+          </tr>
+          
+          <!-- Welcome Message -->
+          <tr>
+            <td class="mobile-padding" style="padding: 35px 30px 0; color: #333333; font-size: 16px; line-height: 1.6;">
+              <p style="margin: 0 0 25px;">Bonjour {{username}},</p>
+              <p style="margin: 0 0 25px;">Votre compte MovieBox a été créé avec succès. Voici vos identifiants de connexion :</p>
+            </td>
+          </tr>
+          
+          <!-- Credentials Box -->
+          <tr>
+            <td class="mobile-padding" style="padding: 0 30px;">
+              <table role="presentation" style="width: 100%; background-color: #f9fafc; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #e5e8ed;">
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; width: 30%; color: #555555;">Nom d'utilisateur :</td>
+                  <td style="padding: 10px; color: #333333;">{{username}}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; width: 30%; color: #555555;">Mot de passe temporaire :</td>
+                  <td style="padding: 10px; color: #333333;">{{tempPassword}}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Login Instructions -->
+          <tr>
+            <td class="mobile-padding" style="padding: 0 30px 30px; color: #333333; font-size: 16px; line-height: 1.6;">
+              <p style="margin: 0 0 25px;">Pour votre sécurité, veuillez vous connecter en utilisant le bouton ci-dessous et changer votre mot de passe temporaire après votre première connexion :</p>
+              
+              <!-- Login Button -->
+              <table role="presentation" cellspacing="0" cellpadding="0" style="margin: 0 auto 25px;">
+                <tr>
+                  <td style="border-radius: 6px; background: linear-gradient(to right, #f44336, #b71c1c); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <a href="{{loginLink}}" style="display: inline-block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 500; border-radius: 6px;">Se connecter</a>
+                  </td>
+                </tr>
+              </table>
+              
+              <p style="margin: 25px 0 10px;">Merci de faire partie de notre communauté !</p>
+              <p style="margin: 10px 0 0; font-size: 15px; font-weight: 500; color: #666666;">L'équipe MovieBox</p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td class="mobile-padding" style="padding: 25px 30px; background-color: #f5f7fa; text-align: center; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; border-top: 1px solid #e5e8ed;">
+              <p style="margin: 0; font-size: 13px; color: #8c9aab;">Vous avez reçu cet email car un compte a été créé sur MovieBox.</p>
+              <p style="margin: 8px 0 0; font-size: 13px; color: #8c9aab;">&copy; {{currentYear}} MovieBox. Tous droits réservés.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
